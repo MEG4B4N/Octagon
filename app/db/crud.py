@@ -1,0 +1,76 @@
+from sqlalchemy.orm import Session
+from db import models
+
+def create_category(db: Session, title: str):
+    """Создание категории"""
+    category = models.Category(title=title)
+    db.add(category)
+    db.commit()
+    db.refresh(category)
+    return category
+
+def get_category(db: Session, category_id: int):
+    """Получение категории по ID"""
+    return db.query(models.Category).filter(models.Category.id == category_id).first()
+
+def get_category_by_title(db: Session, title: str):
+    """Получение категории по названию"""
+    return db.query(models.Category).filter(models.Category.title == title).first()
+
+def get_categories(db: Session, skip: int = 0, limit: int = 100):
+    """Получение всех категорий"""
+    return db.query(models.Category).offset(skip).limit(limit).all()
+
+def delete_category(db: Session, category_id: int):
+    """Удаление категории"""
+    category = get_category(db, category_id)
+    if category:
+        db.delete(category)
+        db.commit()
+        return True
+    return False
+
+def create_book(db: Session, title: str, description: str, price: float, url: str, category_id: int):
+    """Создание книги"""
+    book = models.Book(
+        title=title,
+        description=description,
+        price=price,
+        url=url,
+        category_id=category_id
+    )
+    db.add(book)
+    db.commit()
+    db.refresh(book)
+    return book
+
+def get_book(db: Session, book_id: int):
+    """Получение книги по ID"""
+    return db.query(models.Book).filter(models.Book.id == book_id).first()
+
+def get_books(db: Session, skip: int = 0, limit: int = 100):
+    """Получение всех книг"""
+    return db.query(models.Book).offset(skip).limit(limit).all()
+
+def get_books_by_category(db: Session, category_id: int):
+    """Получение книг по категории"""
+    return db.query(models.Book).filter(models.Book.category_id == category_id).all()
+
+def update_book_price(db: Session, book_id: int, new_price: float):
+    """Обновление цены книги"""
+    book = get_book(db, book_id)
+    if book:
+        book.price = new_price
+        db.commit()
+        db.refresh(book)
+        return book
+    return None
+
+def delete_book(db: Session, book_id: int):
+    """Удаление книги"""
+    book = get_book(db, book_id)
+    if book:
+        db.delete(book)
+        db.commit()
+        return True
+    return False
