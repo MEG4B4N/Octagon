@@ -1,5 +1,5 @@
-from db.db import SessionLocal, engine, Base
-from db import models, crud
+from app.db.db import SessionLocal, engine, Base
+from app.db import models, crud
 
 def init_database():
     """Инициализация базы данных"""
@@ -20,9 +20,9 @@ def init_database():
             existing = crud.get_category_by_title(db, cat_title)
             if not existing:
                 category = crud.create_category(db, cat_title)
-                print(f"✅ Создана категория: {category.title}")
+                print(f"Создана категория: {category.title}")
             else:
-                print(f"ℹ️ Категория уже существует: {cat_title}")
+                print(f"ℹКатегория уже существует: {cat_title}")
         
         prog_cat = crud.get_category_by_title(db, "Программирование")
         fiction_cat = crud.get_category_by_title(db, "Художественная литература")
@@ -61,14 +61,14 @@ def init_database():
             existing_books = crud.get_books(db)
             if not any(b.title == book_data["title"] for b in existing_books):
                 book = crud.create_book(db, **book_data)
-                print(f"✅ Создана книга: {book.title}")
+                print(f"Создана книга: {book.title}")
             else:
-                print(f"ℹ️ Книга уже существует: {book_data['title']}")
+                print(f"ℹКнига уже существует: {book_data['title']}")
         
-        print("\n✅ Инициализация базы данных завершена!")
+        print("\nИнициализация базы данных завершена!")
         
     except Exception as e:
-        print(f"❌ Ошибка: {e}")
+        print(f"Ошибка: {e}")
         db.rollback()
     finally:
         db.close()

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db import models
+from app.db import models
 
 def create_category(db: Session, title: str):
     """Создание категории"""
