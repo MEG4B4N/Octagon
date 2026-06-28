@@ -1,11 +1,11 @@
-from app.db.db import SessionLocal, engine, Base
-from app.db import models, crud
+from db.db import SessionLocal, engine, Base
+from db import models, crud
 
 def init_database():
     """Инициализация базы данных"""
     
     Base.metadata.create_all(bind=engine)
-    print("✅ Таблицы созданы")
+    print("Таблицы созданы")
     
     db = SessionLocal()
     
@@ -58,14 +58,15 @@ def init_database():
         ]
         
         for book_data in books_data:
+
             existing_books = crud.get_books(db)
             if not any(b.title == book_data["title"] for b in existing_books):
                 book = crud.create_book(db, **book_data)
                 print(f"Создана книга: {book.title}")
             else:
-                print(f"ℹКнига уже существует: {book_data['title']}")
+                print(f"Книга уже существует: {book_data['title']}")
         
-        print("\nИнициализация базы данных завершена!")
+        print("\n Инициализация базы данных завершена!")
         
     except Exception as e:
         print(f"Ошибка: {e}")

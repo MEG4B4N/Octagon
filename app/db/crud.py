@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.db import models
+from db import models
 
 def create_category(db: Session, title: str):
     """Создание категории"""
@@ -21,6 +21,16 @@ def get_categories(db: Session, skip: int = 0, limit: int = 100):
     """Получение всех категорий"""
     return db.query(models.Category).offset(skip).limit(limit).all()
 
+def update_category(db: Session, category_id: int, title: str):
+    """Обновление категории"""
+    category = get_category(db, category_id)
+    if category:
+        category.title = title
+        db.commit()
+        db.refresh(category)
+        return category
+    return None
+
 def delete_category(db: Session, category_id: int):
     """Удаление категории"""
     category = get_category(db, category_id)
@@ -30,6 +40,7 @@ def delete_category(db: Session, category_id: int):
         return True
     return False
 
+# ---------- BOOKS CRUD ----------
 def create_book(db: Session, title: str, description: str, price: float, url: str, category_id: int):
     """Создание книги"""
     book = models.Book(
@@ -61,6 +72,20 @@ def update_book_price(db: Session, book_id: int, new_price: float):
     book = get_book(db, book_id)
     if book:
         book.price = new_price
+        db.commit()
+        db.refresh(book)
+        return book
+    return None
+
+def update_book(db: Session, book_id: int, title: str, description: str, price: float, url: str, category_id: int):
+    """Полное обновление книги"""
+    book = get_book(db, book_id)
+    if book:
+        book.title = title
+        book.description = description
+        book.price = price
+        book.url = url
+        book.category_id = category_id
         db.commit()
         db.refresh(book)
         return book
